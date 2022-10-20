@@ -27,7 +27,9 @@ router.get("/:id", async (req, res) => {
       // include: [{ model: Category, through: Tag }],
       include: [{ model: Category, Tag }],
     });
-    if (!productDataById) {
+    if (productDataById) {
+      res.status(200).json(productDataById);
+    } else {
       res.status(404).json({ message: "No product by this Id!" });
     }
   } catch (err) {
@@ -95,6 +97,10 @@ router.put("/:id", (req, res) => {
       const productTagsToRemove = productTags
         .filter(({ tag_id }) => !req.body.tagIds.includes(tag_id))
         .map(({ id }) => id);
+
+      if (!productTagsToRemove) {
+        res.status(404).json({ message: "No product found with this id!" });
+      }
 
       // run both actions
       return Promise.all([
