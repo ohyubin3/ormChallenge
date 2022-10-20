@@ -63,7 +63,7 @@ router.put("/:id", async (req, res) => {
         }
       );
 
-      res.status(200).json(updateCategory);
+      res.status(200).json({ message: "Category has been updated" });
     } else {
       res.status(404).json({ message: "No category by this ID!" });
     }
@@ -72,18 +72,38 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+// router.delete("/:id", async (req, res) => {
+//   // delete a category by its `id` value
+//   try {
+//     const deleteCategory = await Category.destroy({
+//       where: {
+//         id: req.params.id,
+//       },
+//     });
+//     if (!deleteCategory) {
+//       res.status(404).json({ message: "No Category with this ID!" });
+//     } else {
+//       res.status(200).json(deleteCategory);
+//     }
+//   } catch (err) {
+//     res.status(500).json(err);
+//   }
+// });
+
 router.delete("/:id", async (req, res) => {
-  // delete a category by its `id` value
+  // delete on category by its `id` value
   try {
     const deleteCategory = await Category.destroy({
       where: {
         id: req.params.id,
       },
     });
-    if (!deleteCategory) {
-      res.status(404).json({ message: "No Category with this ID!" });
+    if (deleteCategory) {
+      res.status(200).json({ message: "Category has been deleted" });
     } else {
-      res.status(200).json(deleteCategory);
+      res
+        .status(404)
+        .json({ message: "No Category with this ID was found to delete" });
     }
   } catch (err) {
     res.status(500).json(err);

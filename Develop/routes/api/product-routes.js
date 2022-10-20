@@ -25,7 +25,7 @@ router.get("/:id", async (req, res) => {
   try {
     const productDataById = await Product.findByPk(req.params.id, {
       // include: [{ model: Category, through: Tag }],
-      include: [{ model: Category, Tag }],
+      include: [{ model: Category, model: Tag }],
     });
     if (productDataById) {
       res.status(200).json(productDataById);
@@ -108,7 +108,9 @@ router.put("/:id", (req, res) => {
         ProductTag.bulkCreate(newProductTags),
       ]);
     })
-    .then((updatedProductTags) => res.json(updatedProductTags))
+    .then((updatedProductTags) =>
+      res.json({ message: "The Product has been Updated" })
+    )
     .catch((err) => {
       // console.log(err);
       res.status(400).json(err);
@@ -124,12 +126,14 @@ router.delete("/:id", async (req, res) => {
       },
     });
 
-    if (!productDataDelete) {
+    if (productDataDelete) {
+      res.status(200).json({
+        message: `The Product has been deleted`,
+      });
+    } else {
       res.status(404).json({ message: "No product found with this id!" });
       return;
     }
-
-    res.status(200).json(productDataDelete);
   } catch (err) {
     res.status(500).json(err);
   }
